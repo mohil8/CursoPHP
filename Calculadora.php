@@ -39,7 +39,7 @@ else{
 <body>
     <h1>CALCULADORA DE <?php echo MINOMBRE?></h1>
     <!-- action: página que trata el formulario cuando se hace submit-->
-    <form action="1calculadora.php"  metho="get">
+    <form action="Calculadora.php"  metho="get">
         <label for="n1">Número1</label>
         <input type="number" name="n1" id="n1"><br/>
         <label for="n2">Número2</label>
