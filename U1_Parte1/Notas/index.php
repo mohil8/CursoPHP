@@ -25,14 +25,17 @@ $asigs = $modelo->obtenerAsignaturas();
              ?>
             </select>
         </div>
+        <br>
         <div>
             <label for="fecha">Fecha</label><br/>
             <input type="date" name="fecha" id="fecha" value="<?php echo date('Y-m-d');?>"/>
         </div>
+        <br>
         <div>
             <label for="desc">Descripción</label><br/>
-            <input type="text" name="desc" id="desc" placeholder="Examen tema 1"/>
-        </div>
+            <textarea name="desc" id="desc" rows="4" cols="50" placeholder="Examen tema 1"></textarea>
+       </div>
+        <br>
         <div>
             <label>Tipo</label><br/>
             <input type="radio" name="tipo" id="ex" value="Examen" checked="checked"/>
@@ -40,11 +43,56 @@ $asigs = $modelo->obtenerAsignaturas();
             <input type="radio" name="tipo" id="ta" value="Tarea"/>
             <label for="ta">Tarea</label>
         </div>
+        <br>
         <div>
             <label for="nota">Nota</label><br/>
             <input type="number" name="nota" id="nota" placeholder="Nota"/>
         </div>
-        <input type="submit" value="Crear Nota">
+        <br>
+        <input type="submit" name="crear" value="Crear Nota">
+        <br>
     </form>
+    <?php 
+    
+    if(isset($_POST['crear'])){
+        if(empty($_POST['asig']) || empty($_POST['fecha']) || empty($_POST['desc']) || empty($_POST['tipo']) || empty($_POST['nota']) ){
+            echo "<h3 style='color:red;'>Rellena todos los datos</h3>";
+        }else{
+            $nota = new Nota($_POST['asig'],$_POST['fecha'],$_POST['desc'],$_POST['tipo'],$_POST['nota'],);
+            $modelo->crearNota($nota);
+        }        
+    }
+   
+    ?>
+
+<table border="1">
+    <tr>
+        <th>Asignatura</th>
+        <th>Fecha</th>
+        <th>Descripción</th>
+        <th>Tipo</th>
+        <th>Nota</th>
+    </tr>
+
+    <?php
+    
+    $not=$modelo->obtenerNotas();
+    foreach($not as $nota){
+        echo "<tr>";
+        echo "<td>".$nota->getAsi()."</td>";
+        echo "<td>".$nota->getFecha()."</td>";
+        echo "<td>".$nota->getDesc()."</td>";
+        echo "<td>".$nota->getTipo()."</td>";
+        if ($nota->getNota() < 5) {
+            echo "<td style='background-color: red;'>".$nota->getNota()."</td>";
+        } else {
+            echo "<td style='background-color: green;'>".$nota->getNota()."</td>";
+        }
+        
+        echo "</tr>"; 
+    }
+  
+    ?>
+</table>
 </body>
 </html>

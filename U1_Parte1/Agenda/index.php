@@ -40,7 +40,7 @@ $modelo = new Modelo('agenda.dat');
     </form>
     <?php
     if(isset($_POST['crear'])){
-        if(empty($_POST['nombre']) || empty($_POST['telf']) or empty($_FILES['foto']['name']) or empty($_POST['tipo'])){
+        if(empty($_POST['nombre']) || empty($_POST['telf']) || empty($_FILES['foto']['name']) || empty($_POST['tipo'])){
             echo '<h3 style="color:red;">Error, hay campos vacíos</h3>';
         }
         else{

@@ -44,7 +44,7 @@ class Modelo{
         $resultado=1;
         try {
             if(file_exists($this->nombre)){
-                $registros=file($this->nombre);
+                $registros=file($this->nombre); 
                 //Obtengo la posición del array del último registro
                 $pos=sizeof($registros)-1;
                 $campos = explode(';',$registros[$pos]);

@@ -2,7 +2,7 @@
 class Nota{
     private $asi,$fecha,$tipo,$desc,$nota;
 
-    function __construct($asi,$fecha,$tipo,$desc,$nota)
+    function __construct($asi,$fecha,$desc,$tipo,$nota)
     {
         $this->asi=$asi;
         $this->fecha=$fecha;

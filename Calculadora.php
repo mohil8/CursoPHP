@@ -1,5 +1,5 @@
 <?php
-const MINOMBRE = 'Rosa';
+const MINOMBRE = 'Mohi';
 //Chequear si se han escrito números
 if(!empty($_GET['n1']) and !empty($_GET['n2'])){
     $n1=$_GET['n1'];
@@ -39,7 +39,7 @@ else{
 <body>
     <h1>CALCULADORA DE <?php echo MINOMBRE?></h1>
     <!-- action: página que trata el formulario cuando se hace submit-->
-    <form action="Calculadora.php"  metho="get">
+    <form action="Calculadora.php"  method="get">
         <label for="n1">Número1</label>
         <input type="number" name="n1" id="n1"><br/>
         <label for="n2">Número2</label>

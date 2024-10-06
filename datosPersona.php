@@ -6,7 +6,7 @@
     <title>Document</title>
 </head>
 <body>
-    <form action="3datospersona.php" method="post">
+    <form action="#" method="post">
         <label for="nombre">Nombre</label>
         <input type="text" name="nombre" id="nombre" required value="<?php echo (!empty($_POST['nombre']) ? ($_POST['nombre']) : ''); ?>"><br>
 
