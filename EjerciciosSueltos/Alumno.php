@@ -22,7 +22,7 @@
         </div>
         <div>
             <label for="asig">Asignaturas</label><br/>
-            <select name="asig[]" id="asig" multiple="multiple">
+            <select name="asig" id="asig" multiple="multiple">
                 <option>DWES</option>
                 <option>DIC</option>
                 <option>PROG</option>
@@ -52,13 +52,9 @@
     if(isset($_POST['enviar'])){
         echo "Nombre:".$_POST['nombre'];
         echo "<br/>Curso:".$_POST['curso'];
-        echo "<br/>Asignaturas:";
+        echo "<br/>Asignaturas:".$_POST['asig'];
         //Hay que chequear si se ha marcado alguna asignatura
-        if(isset($_POST['asig'])){
-            foreach($_POST['asig'] as $a){
-                echo $a.' ';
-            }
-        }
+       
         //Chequear si hay sexo seleccionado
         if(isset($_POST['sexo']))
              echo "<br/>Sexo:".$_POST['sexo'];
@@ -73,4 +69,3 @@
     ?>
 </body>
 </html>
-// este es u ncomentario 
