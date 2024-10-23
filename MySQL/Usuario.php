@@ -1,15 +1,15 @@
+
 <?php
 class Usuario{
+    private $id, $tipo;
 
-    private $id,$tipo;
-
-    public function __construct($id,$tipo){
-
-        $this->id = $id;
-        $this->tipo = $tipo;
+    public function __construct($id,$tipo)
+    {
+        $this->id=$id;
+        $this->tipo=$tipo;
     }
-    
 
+    
 
     /**
      * Get the value of id
@@ -27,6 +27,26 @@ class Usuario{
     public function setId($id)
     {
         $this->id = $id;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of tipo
+     */ 
+    public function getTipo()
+    {
+        return $this->tipo;
+    }
+
+    /**
+     * Set the value of tipo
+     *
+     * @return  self
+     */ 
+    public function setTipo($tipo)
+    {
+        $this->tipo = $tipo;
 
         return $this;
     }
