@@ -1,4 +1,3 @@
-
 <?php
 class Socio{
     private $id,$nombre,$fechaSancion,$email,$us;

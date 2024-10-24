@@ -1,4 +1,3 @@
-
 <?php
 require_once 'Modelo.php';
 session_start();
@@ -57,7 +56,8 @@ if(isset($_POST['entrar'])){
         </form>
         <?php
         if(isset($error)){
-            echo '<div class="text-danger">'.$error.'</div>';
+            echo '
+            <br/><div class="alert alert-danger" role="alert">'.$error.'</div>';
         }
         ?>
     </div>

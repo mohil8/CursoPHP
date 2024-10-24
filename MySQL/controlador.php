@@ -1,3 +1,4 @@
+
 <?php
 require_once 'Modelo.php';
 session_start();
@@ -12,4 +13,23 @@ if(isset($_POST['cerrar'])){
 }
 //Creamos objeto de acceso a la BD
 $bd = new Modelo();
+if(isset($_POST['pCrear']) and $_SESSION['usuario']->getTipo()=='A'){
+    //TEnemos que crear un préstamo
+    //Usamos la función de la bd comprobarSiPrestar(pSocio int, pLibro int)
+    //para ver si se puede hacer el préstamo
+    $resultado = $bd->comprobar($_POST['socio'],$_POST['libro']);
+    if($resultado=='ok'){
+        //Hacer el préstamo
+        $numero = $bd->crearPrestamo($_POST['socio'],$_POST['libro']);
+        if($numero>0) {
+            $mensaje='Préstamo nº '.$numero.'registrado';
+        }
+        else{
+            $error = 'Se ha producido un error al crear el préstamo';
+        }
+    }
+    else{
+        $error = $resultado;
+    }
+}
 ?>
