@@ -68,7 +68,8 @@ insert into prestamos values (null,1,1,20230101,20230115,null),
 delimiter //
 create function comprobarSiPrestar(pSocio int, pLibro int) returns int deterministic
 begin
-	declare resultado int default 1;
+	
+    declare resultado int default 1;
     declare vId int;
     
     -- Comprobar ejemplares
