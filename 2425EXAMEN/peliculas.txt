@@ -1,2 +1,3 @@
-brosss;2024-10-09;Drama/Terror;Pelicula;12
-salah;2024-10-09;Drama/Terror;Pelicula;18
+mmuk;2024-10-31;Terror;Pelicula;4
+mmuk;2024-10-31;Drama;Pelicula;4
+mmuk;2024-10-31;Aventura;Pelicula;9
