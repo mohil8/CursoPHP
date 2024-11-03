@@ -2,3 +2,4 @@
 3435435;4343534564;Doble;5;Fin de semana;Tarjeta;0;1;1
 3435435;4343534564;Doble;5;Fin de semana;Tarjeta;0;1;1
 02377128D;Mohi;Doble;4;Promocionado;Tarjeta;0;0;1
+02377128D;Mohi;Doble;4;Diario;Tarjeta;0;1;0

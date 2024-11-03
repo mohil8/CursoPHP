@@ -1,4 +1,3 @@
-
 <?php
 class Prestamo{
     private $id, $socio, $libro, $fechaP, $fechaD, $fechaRD;

@@ -1,4 +1,3 @@
-
 <?php
 class Libro{
     private $id,$titulo,$ejemplares,$autor;

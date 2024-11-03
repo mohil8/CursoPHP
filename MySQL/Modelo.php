@@ -1,4 +1,3 @@
-
 <?php
 require_once 'Usuario.php';
 require_once 'Socio.php';
@@ -284,6 +283,124 @@ class Modelo{
             echo $th->getMessage();
         }
         return $resultado;
+    }
+    function obtenerPrestamosSocio($us){
+        $resultado = array();
+        try {
+            //Seleccionamos los préstamos de un socio
+            $consulta = $this->conexion->prepare('SELECT * from prestamos as p
+                            inner join socios as s on p.socio=s.id 
+                            inner join libros as l on p.libro=l.id 
+                             where s.us = ?');
+            $params=array($us->getId());
+            if($consulta->execute($params)){
+                while($fila=$consulta->fetch()){
+                    $resultado[]= new Prestamo($fila[0],
+                            new Socio($fila['socio'],$fila['nombre'],$fila['fechaSancion'],$fila['email'],$fila['us']),
+                            new Libro($fila['libro'],$fila['titulo'],$fila['ejemplares'],$fila['autor']),
+                            $fila['fechaP'],
+                            $fila['fechaD'],
+                            $fila['fechaRD']);
+                }
+            }
+            
+        } catch (\Throwable $th) {
+            echo $th->getMessage();
+        }
+        return $resultado;
+    }
+    public function crearLibro($l){
+        $resultado=0;
+        try {
+            $consulta = $this->conexion->prepare('INSERT into libros values
+                (null,?,?,?)');
+            $params=array($l->getTitulo(),$l->getEjemplares(),$l->getAutor());
+            if($consulta->execute($params)){
+                //Comprobamos si se ha insertado 1 fila
+                if($consulta->rowCount()==1){
+                    //Obtenemos el id del préstamos creado
+                    $resultado = $this->conexion->lastInsertId();
+                }
+            }
+        } 
+        catch (PDOException $e) {
+            echo $e->getMessage();
+        }
+        catch (\Throwable $th) {
+            echo $th->getMessage();
+        }
+        return $resultado;
+    }
+    function obtenerUsuarioDni($dni){
+        $resultado=null;
+        try {
+            $consulta=$this->conexion->prepare('SELECT * from usuarios where upper(id) = upper(?)');
+            $params=array($dni);
+            if($consulta->execute($params)){
+                if($fila=$consulta->fetch()){
+                    $resultado=new Usuario($fila['id'],$fila['tipo']);
+                }
+            }
+        } catch (\Throwable $th) {
+            echo $th->getMessage();
+        }
+
+        return $resultado;
+    }
+
+    public function crearUsuario($u,$s){
+        $resultado=false;
+        try {
+            $this->conexion->beginTransaction();
+            //Crear usuario
+            $consulta=$this->conexion->prepare('INSERT into usuarios values (?,sha2(?,512),?)');
+            $params=array($u->getId(),$u->getId(),$u->getTipo()); 
+            if($consulta->execute($params) and $consulta->rowCount()==1){
+                //Comprobar si crear socio
+                if($s!=null){
+                    //Crear Socio
+                    $consulta=$this->conexion->prepare('INSERT into socios values (null,?,null,?,?)');
+                    $params=array($s->getNombre(),$s->getEmail(),$s->getUs());
+                    if($consulta->execute($params) and $consulta->rowCount()==1){
+                        $this->conexion->commit();
+                        $resultado=true;
+                    }
+                    else{
+                        $this->conexion->rollBack();
+                    }
+                }
+                else{
+                    $this->conexion->commit();
+                    $resultado=true; 
+                }
+            }
+        } 
+        catch (\PDOException $e) {
+            $this->conexion->rollBack();
+            echo $e->getMessage();
+        }
+        catch (\Throwable $th) {
+            echo $th->getMessage();
+        }
+        return $resultado;
+    }
+    public function obtenerDatosUsSocios(){
+        $resultado=array();
+
+        try {
+            $consulta=$this->conexion->query('SELECT * from usuarios as u left outer join socios as s 
+                                                on u.id = s.us  order by u.tipo, u.id');
+            
+            while($fila=$consulta->fetch()){
+                $resultado[] = array(new Usuario($fila[0],$fila['tipo']), 
+                new Socio($fila[3],$fila['nombre'],$fila['fechaSancion'],$fila['email'],$fila['us']));
+            }
+            
+        } catch (\Throwable $th) {
+            echo $th->getMessage();
+        }
+        return $resultado;
+        
     }
 
     /**

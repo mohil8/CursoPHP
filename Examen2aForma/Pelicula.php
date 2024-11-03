@@ -108,5 +108,13 @@ class Pelicula{
 
         return $this;
     }
+
+    /**
+     * Get the value of titulo
+     */ 
+    public function getTitulo()
+    {
+        return $this->titulo;
+    }
 }
 ?>
