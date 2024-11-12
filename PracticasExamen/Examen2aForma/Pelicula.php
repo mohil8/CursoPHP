@@ -1,21 +1,27 @@
 <?php
 
-class Pelicula{
+class Peliculaa{
 
     private $titulo,$fecha,$genero,$tipo,$capitulos;
-    
 
-    public function __construct($tit,$fech,$gene,$tip,$caps){
+    function __construct($titulo,$fecha,$genero,$tipo,$capitulos){
 
-        $this->titulo = $tit;
-        $this->fecha = $fech;
-        $this->genero = $gene;
-        $this->tipo = $tip;
-        $this->capitulos = $caps;
-
+        $this->titulo=$titulo;
+        $this->fecha=$fecha;
+        $this->genero=$genero;
+        $this->tipo=$tipo;
+        $this->capitulos=$capitulos;
+        
     }
 
 
+    /**
+     * Get the value of titulo
+     */ 
+    public function getTitulo()
+    {
+        return $this->titulo;
+    }
 
     /**
      * Set the value of titulo
@@ -108,13 +114,6 @@ class Pelicula{
 
         return $this;
     }
-
-    /**
-     * Get the value of titulo
-     */ 
-    public function getTitulo()
-    {
-        return $this->titulo;
-    }
 }
+
 ?>
