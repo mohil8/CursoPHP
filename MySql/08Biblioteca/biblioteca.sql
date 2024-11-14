@@ -102,6 +102,20 @@ begin
     return resultado;
 end//
 
+create procedure infoSocio(pIdS int)
+begin
+-- Nº de perstamos, fecha primer préstamo y fecha último préstamo
+select count(*), min(fechaP), max(fechaP)
+  from prestamos
+  where socio = pIdS;
+
+-- Nº de préstamos no devueltos, nº de préstamos devueltos, titulo del último libro prestado
+select (select count(*) from prestamos where socio = pIdS and fechaRD is null),
+        (select count(*) from prestamos where socio = pIdS and fechaRD is not null),
+        (select titulo from libro where id = 
+            (select libro from prestamos where socio = pIdS and fechaP=(select max(fechaP) from prestamos where socio =pIdS)));
+end//
+
 delimiter ;
 
 select comprobarSiPrestar(5,1);  -- Chequea ejemplares
