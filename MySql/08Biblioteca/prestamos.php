@@ -1,5 +1,9 @@
 <?php
 require_once 'controlador.php';
+if ($_SESSION['usuario']->getTipo() == 'S') {
+    //Los socios no pueden acceder a esta página
+    header('location:login.php');
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -33,38 +37,45 @@ require_once 'controlador.php';
             <!-- ÁREA DE INSERT (SÓLO ADMIN) -->
             <?php
             if ($_SESSION['usuario']->getTipo() == 'A') {
-                //Obtenemos los socios
-                $socios = $bd->obtenerSocios();
-                //Obtenemos libros
-                $libros = $bd->obtenerLibros();
             ?>
-                <form action="" method="post" class="row g-3">
-                    <div class="col-md-3">
-                        <label for="socio" class="form-label">Socio</label>
-                        <select class="form-select" name="socio" id="socio">
-                            <?php
-                            foreach ($socios as $s) {
-                                echo '<option value="' . $s->getId() . '">'
-                                    . $s->getNombre() . '-' . $s->getUs() . '</option>';
-                            }
-                            ?>
-                        </select>
+                <form action="" method="post">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <label for="dni" class="form-label">DNI</label>
+                            <input type="text" class="form-control" name="dni" id="dni" 
+                            value="<?php echo (isset($_POST['dni'])?$_POST['dni']:'')?>"/>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="tipo" class="form-label">Tipo</label>
+                            <select class="form-select" name="tipo" id="tipo" onchange="submit()">
+                                <option value="A">Administrador</option>
+                                <option value="S" 
+                        <?php echo (isset($_POST['tipo']) && $_POST['tipo']=='S'?'selected="selected"':'')?>
+                            >Socio</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Acción</label><br />
+                            <button class="btn btn-outline-secondary" type="submit" id="sCrearSocio" name="sCrearSocio">+</button>
+                        </div>
                     </div>
-                    <div class="col-md-3">
-                        <label for="libro" class="form-label">Libro</label>
-                        <select class="form-select" name="libro" id="libro">
-                            <?php
-                            foreach ($libros as $l) {
-                                echo '<option value="' . $l->getId() . '">'
-                                    . $l->getTitulo() . '-' . $l->getEjemplares() . '</option>';
-                            }
-                            ?>
-                        </select>
+                    <?php
+                    if(isset($_POST['tipo']) and $_POST['tipo']=='S'){
+                    ?>
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <label for="nombre" class="form-label">Nombre</label>
+                            <input type="text" class="form-control" name="nombre" id="nombre" />
+                        </div>
+                        <div class="col-md-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" name="email" id="email" />
+                        </div>
+                        
                     </div>
-                    <div class="col-md-3">
-                        <label class="form-label">Acción</label><br />
-                        <button class="btn btn-outline-secondary" type="submit" id="pCrear" name="pCrear">+</button>
-                    </div>
+                    <?php
+                    }
+                    ?>
                 </form>
             <?php
             }
@@ -78,48 +89,50 @@ require_once 'controlador.php';
                     <thead>
                         <tr>
                             <th>Id</th>
-                            <th>Socio</th>
-                            <th>Libro</th>
-                            <th>Fecha Préstamos</th>
-                            <th>Fecha Devolución</th>
-                            <th>Fecha Real Devolución</th>
-                            <?php if($_SESSION['usuario']->getTipo()=='A'){?>
+                            <th>Tipo</th>
+                            <th>IdSocio</th>
+                            <th>Nombre</th>
+                            <th>Fecha Sanción</th>
+                            <th>Email</th>
+                            <?php if ($_SESSION['usuario']->getTipo() == 'A') { ?>
                                 <th>Acciones</th>
-                            <?php }?>
+                            <?php } ?>
                         </tr>
                     </thead>
                     <tbody>
                         <?php
-                        if($_SESSION['usuario']->getTipo()=='A'){
-                            $prestamos = $bd->obtenerPrestamos();
-                        }
-                        elseif($_SESSION['usuario']->getTipo()=='S'){
-                            $prestamos = $bd->obtenerPrestamosSocio($_SESSION['usuario']);
-                        }
-                        else{
-                            $prestamos=array();
-                        }
-                        foreach ($prestamos as $p) {
-                            echo '<tr>';
-                            echo '<td>' . $p->getId() . '</td>';
-                            echo '<td>' . $p->getSocio()->getNombre() . '-' . $p->getSocio()->getUs() . '</td>';
-                            echo '<td>' . $p->getLibro()->getTitulo() . '-' . $p->getLibro()->getAutor() . '</td>';
-                            echo '<td>' . date('d/m/Y', strtotime($p->getFechaP())) . '</td>';
-                            echo '<td>' . date('d/m/Y', strtotime($p->getFechaD())) . '</td>';
-                            echo '<td>' .
-                                ($p->getFechaRD() == null ? '' : date('d/m/Y', strtotime($p->getFechaRD()))) .
-                                '</td>';
-                            if($_SESSION['usuario']->getTipo()=='A'){
-                                echo '<td>';
-                                echo ($p->getFechaRD() == null ?
-                                    '<button class="btn btn-outline-secondary" type="submit" name="pDevolver" 
-                                    value="' . $p->getId() . '">Devolver</button>'
-                                    : '');
-                                echo '</td>';
+                            $datos = $bd->obtenerDatosUsSocios();
+                            foreach($datos as $d){
+                                $u=$d[0];
+                                $s=$d[1];
+                                echo '<tr>';
+                                echo '<td>'.generarInput('input','dni',$u->getId(),'sMSocio',$u->getId()).'</td>';
+                                echo '<td>'.$u->getTipo().'</td>';
+                                if($u->getTipo()=='S'){
+                                    echo '<td>'.$s->getId().'</td>';
+                                    echo '<td>'.generarInput('input','nombre',$s->getNombre(),'sMSocio',$u->getId()).'</td>';
+                                    echo '<td>'.
+                                    ($s->getFechaSancion()==null?'':generarInput('input type="date"','fSancion',
+                                                                                    $s->getFechaSancion(),'sMSocio',$u->getId())).
+                                    '</td>';
+                                    echo '<td>'.generarInput('input type="email"','email',$s->getEmail(),'sMSocio',$u->getId()).'</td>';
+                                }
+                                else{
+                                    echo '<td></td>';
+                                    echo '<td></td>';
+                                    echo '<td></td>';
+                                    echo '<td></td>';
+                                }
+                                //Obtener si el socio tiene préstamos para generar ventanas de avisos
+                                $tienePrestamos=sizeof($bd->obtenerPrestamosSocio($u))>0;
+                                echo '<td>'.
+                                generarBotones('sMSocio','sGSocio','Modificar','Guardar','sMSocio',$u->getId(),false).                                
+                                generarBotones('sBSocio','sCSocio','Borrar','Cancelar','sMSocio',$u->getId(),$tienePrestamos)
+                                .'</td>';
+                                echo '</tr>';
                             }
-                            echo '</tr>';
-                        }
                         ?>
+
                     </tbody>
                 </table>
             </form>
