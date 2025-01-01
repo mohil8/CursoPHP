@@ -39,12 +39,12 @@ class Correo
             $correo->isSMTP();
             $correo->Host = 'smtp.gmail.com';
             $correo->SMTPAuth = true;
-            $correo->Username = 'mes-sbai01@educarex.es';
+            $correo->Username = 'rmmateosv@gmail.com';
             $correo->Password = $this->ca;
             $correo->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
             $correo->Port = 465;
             //Configuración del correo que vamos a escribir
-            $correo->setFrom('mes-sbai01@educarex.es', 'Bibiloteca de Rosa');
+            $correo->setFrom('rmmateosv@gmail.com', 'Bibiloteca de Rosa');
             $correo->addAddress($destinatario->getEmail(), $destinatario->getNombre());
             //Configuración del contenido del mensaje
             $correo->isHTML(true);
