@@ -8,22 +8,24 @@ require_once 'controlador.php';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Biblioteca</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </head>
 
 <body>
     <?php
     require_once 'menu.php';
     ?>
-    <div>
+    <div class="container">
         <br />
         <div>
             <!-- ÁREA DE ERRORES -->
             <?php
             if (isset($mensaje)) {
-                echo '<div style="color: green;">' . $mensaje . '</div>';
+                echo '<div class="alert alert-success" role="alert">' . $mensaje . '</div>';
             }
             if (isset($error)) {
-                echo '<div style="color: red;">' . $error . '</div>';
+                echo '<div class="alert alert-danger" role="alert">' . $error . '</div>';
             }
             ?>
         </div>
@@ -36,10 +38,10 @@ require_once 'controlador.php';
                 //Obtenemos libros
                 $libros = $bd->obtenerLibros();
             ?>
-                <form action="" method="post">
-                    <div>
-                        <label for="socio">Socio</label>
-                        <select name="socio" id="socio">
+                <form action="" method="post" class="row g-3">
+                    <div class="col-md-3">
+                        <label for="socio" class="form-label">Socio</label>
+                        <select class="form-select" name="socio" id="socio">
                             <?php
                             foreach ($socios as $s) {
                                 echo '<option value="' . $s->getId() . '">'
@@ -48,9 +50,9 @@ require_once 'controlador.php';
                             ?>
                         </select>
                     </div>
-                    <div>
-                        <label for="libro">Libro</label>
-                        <select name="libro" id="libro">
+                    <div class="col-md-3">
+                        <label for="libro" class="form-label">Libro</label>
+                        <select class="form-select" name="libro" id="libro">
                             <?php
                             foreach ($libros as $l) {
                                 echo '<option value="' . $l->getId() . '">'
@@ -59,15 +61,15 @@ require_once 'controlador.php';
                             ?>
                         </select>
                     </div>
-                    <div>
-                        <label>Acción</label><br />
-                        <button type="submit" id="pCrear" name="pCrear">+</button>
+                    <div class="col-md-3">
+                        <label class="form-label">Acción</label><br />
+                        <button class="btn btn-outline-secondary" type="submit" id="pCrear" name="pCrear">+</button>
                     </div>
                 </form>
             <?php
             } else {
                 echo '<h5>Estadística</h5>';
-                echo '<div>';
+                echo '<div class="d-flex p-2 bd-highlight">';
                 //Pintar estadística de socio
                 $s = $bd->obtenerSocioDni($_SESSION['usuario']->getId());
                 $datos = $bd->estadistica($s->getId());
@@ -79,13 +81,14 @@ require_once 'controlador.php';
                         if (!$autores) {
                             echo '</div>';
                             echo '<h5>Libros leídos por autor</h5>';
-                            echo '<div>';
+                            echo '<div class="d-flex flex-row p-12 bd-highlight">';
                             $autores = true;
-                        }
+                        } 
                         pintarCard($d);
                     }
                     echo '</div>';
                 }
+                
             }
             ?>
         </div>
@@ -93,7 +96,7 @@ require_once 'controlador.php';
             <br />
             <!-- mostrar préstamos -->
             <form action="" method="post">
-                <table border="1">
+                <table class="table">
                     <thead>
                         <tr>
                             <th>Id</th>
@@ -129,7 +132,7 @@ require_once 'controlador.php';
                             if ($_SESSION['usuario']->getTipo() == 'A') {
                                 echo '<td>';
                                 echo ($p->getFechaRD() == null ?
-                                    '<button type="submit" name="pDevolver" 
+                                    '<button class="btn btn-outline-secondary" type="submit" name="pDevolver" 
                                     value="' . $p->getId() . '">Devolver</button>'
                                     : '');
                                 echo '</td>';
