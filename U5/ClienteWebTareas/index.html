@@ -24,6 +24,23 @@
         
     </table>
     <script>
+        function borrarTarea(id){
+            const url=`http://localhost/CursoPHP/U5/APITareas/public/tareas/${id}`;
+           if(confirm(`¿Estás seguro de eliminar la tarea con id ${id}?`)){
+                axios.delete(url)
+             .then(response=>{
+                alert('Tarea Eliminada');
+                cargarTareas();
+                })
+                .catch(
+                    error=>{
+                        console.error(error.response.data);
+                        alert(`Error:${error.response.data} EStado:${error.response.status}`);
+                    }
+                );
+           }
+            
+        }
         function finalizarTarea(id){
             const url=`http://localhost/CursoPHP/U5/APITareas/public/tareas/${id}`;
             datos={
