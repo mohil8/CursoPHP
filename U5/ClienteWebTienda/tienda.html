@@ -4,8 +4,63 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <script src="axios/dist/axios.min.js"></script>
 </head>
 <body>
-    
+    <div>
+        <h3 id="nombreUS"></h3>
+        <button type="button" onclick="salir()">Salir</button>
+    </div>
+    <div>
+        <div>
+            <table id="productos">
+
+            </table>
+        </div>
+        <div>
+            <table id="productos">
+                
+            </table>
+        </div>
+    </div>
 </body>
+<script>
+    //Recuperar el token y el nombre de usuario
+    const token = localStorage.getItem('token');
+    if(token == null){
+        window.location.href="login.html";
+    }else{
+        const nombreUS=localStorage.getItem('usuario');
+        document.getElementById('nombreUS').textContent=`${nombreUS}`;
+
+        //Todas las peticiones van a ir con token de autentificación
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+
+        cargarProductos();
+    }
+    function cargarProductos(){
+        const url = 'http://localhost/CursoPHP/U5/APITienda/public/api/productos'
+
+        axios.get(url)
+            .then(response => { 
+                
+            })
+            .catch(error => {
+               alert('Error: No ha cerrado sesión')
+            });
+    }
+    function salir(){
+        const url = 'http://localhost/CursoPHP/U5/APITienda/public/api/logout'
+        
+        axios.post(url)
+            .then(response => { 
+                localStorage.removeItem('token');
+                localStorage.removeItem('usuario');
+                window.location.href='login.html';
+            })
+            .catch(error => {
+               alert('Error: No ha cerrado sesión')
+            });
+    }
+</script>
 </html>
