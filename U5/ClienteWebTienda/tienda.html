@@ -55,7 +55,8 @@
         axios.get(url)
             .then(response => {
                 console.log(response.data);
-                var pedidos = response.data.data;
+                var pedidos = response.data;
+                console.log(response.data);
                 var tablaP = document.getElementById('pedidos');
                 tablaP.innerHTML =
                     '<tr><th>ID</th><th>Producto</th><th>Cantidad</th><th>Precio</th></tr>';
