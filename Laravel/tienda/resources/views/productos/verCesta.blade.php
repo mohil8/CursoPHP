@@ -23,8 +23,8 @@
             <th>Id</th>
             <th>Producto</th>
             <th>Precio Unitario</th>
-            <th>Precio Total</th>
             <th>Cantidad</th>
+            <th>Precio Total</th>
             <th>Imagen</th>
             <th>Eliminar</th>
         </tr>
@@ -38,7 +38,7 @@
                 <td>{{ $p->producto->nombre }}</td>
                 <td>{{ $p->precioU }}</td>
                 <td><input type="number" min="1" name="cantidad" onchange="submit()" value="{{$p->cantidad}}"></td>
-                <td>{{ $p->cantidad * $p->precioU }}</td>
+                <td>{{ $p->cantidad * $p->precioU }}€</td>
                 <td>
                     <img src="{{ asset('img/productos/' . $p->producto->imagen) }}" alt="cesta" width="30px">
                 </td>
