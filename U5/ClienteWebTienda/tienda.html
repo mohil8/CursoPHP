@@ -3,136 +3,201 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tienda</title>
-    <script src="axios/dist/axios.min.js"></script>
+    <title>Tienda - Premium Design</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card {
+            border: none;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.5);
+            width: 100%;
+            max-width: 900px;
+        }
+
+        .card h3 {
+            font-weight: bold;
+            color: #ffffff;
+        }
+
+        .table {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            border-collapse: separate;
+            border-spacing: 0;
+            border-radius: 10px;
+        }
+
+        .table th, .table td {
+            border-top: none;
+        }
+
+        .btn {
+            border-radius: 30px;
+        }
+
+        .btn-success {
+            background: linear-gradient(90deg, #6c63ff, #3b32b3);
+            border: none;
+        }
+
+        .btn-success:hover {
+            background: linear-gradient(90deg, #3b32b3, #6c63ff);
+        }
+
+        .container {
+            animation: fadeIn 1.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logout {
+            text-decoration: underline;
+            cursor: pointer;
+            color: #ff6f61;
+        }
+
+        .logout:hover {
+            color: #ffb3ab;
+        }
+    </style>
 </head>
 <body>
-    <div class="container mt-4">
-        <div class="d-flex justify-content-between align-items-center">
-            <span id="nombreUS" class="h4"></span>
-            <u onclick="salir()" class="text-danger" style="cursor:pointer;">Salir</u>
-        </div>
-        
-        <div class="row mt-4">
-            <!-- Productos -->
-            <div class="col-md-6">
-                <h3>Productos</h3>
-                <table id="productos" class="table table-striped">
-                    <!-- La tabla de productos se llenará dinámicamente -->
-                </table>
+    <div class="container">
+        <div class="card p-4 shadow-lg">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <span id="nombreUS" class="h4"></span>
+                <span onclick="salir()" class="logout">Salir</span>
             </div>
+            
+            <div class="row">
+                <!-- Productos -->
+                <div class="col-md-6">
+                    <h3>Productos</h3>
+                    <table id="productos" class="table table-striped">
+                        <!-- La tabla de productos se llenará dinámicamente -->
+                    </table>
+                </div>
 
-            <!-- Pedidos -->
-            <div class="col-md-6">
-                <h3>Pedidos</h3>
-                <table id="pedidos" class="table table-striped">
-                    <!-- La tabla de pedidos se llenará dinámicamente -->
-                </table>
+                <!-- Pedidos -->
+                <div class="col-md-6">
+                    <h3>Pedidos</h3>
+                    <table id="pedidos" class="table table-striped">
+                        <!-- La tabla de pedidos se llenará dinámicamente -->
+                    </table>
+                </div>
             </div>
         </div>
     </div>
+
+    <script>
+        const token = localStorage.getItem('token');
+        if (token == null) {
+            window.location.href = 'login.html'; // Redirige al login si no hay token
+        } else {
+            const nombreUS = localStorage.getItem('usuario');
+            document.getElementById('nombreUS').textContent = `Bienvenido, ${nombreUS}`;
+            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+            cargarProductos();
+            cargarPedidos();
+        }
+
+        function cargarPedidos() {
+            const url = 'http://localhost/CursoPHP/U5/APITienda/public/api/pedidos';
+            axios.get(url)
+                .then(response => {
+                    var pedidos = response.data;
+                    var tablaP = document.getElementById('pedidos');
+                    tablaP.innerHTML =
+                        '<tr><th>ID</th><th>Producto</th><th>Cantidad</th><th>Precio</th></tr>';
+                    pedidos.forEach(p => {
+                        var fila = document.createElement('tr');
+                        fila.innerHTML = `<td>${p.id}</td>
+                                          <td>${p.producto}</td>
+                                          <td>${p.cantidad}</td>
+                                          <td>${p.precioU}</td>`;
+                        tablaP.appendChild(fila);
+                    });
+                })
+                .catch(error => {
+                    alert('Error al cargar los pedidos');
+                });
+        }
+
+        function comprar(id) {
+            const url = 'http://localhost/CursoPHP/U5/APITienda/public/api/pedidos';
+            const datos = {
+                producto: id,
+                cantidad: 1
+            };
+            axios.post(url, datos)
+                .then(response => {
+                    alert('Pedido creado con éxito');
+                    cargarProductos();
+                    cargarPedidos();
+                })
+                .catch(error => {
+                    alert('Error al crear el pedido');
+                });
+        }
+
+        function cargarProductos() {
+            const url = 'http://localhost/CursoPHP/U5/APITienda/public/api/productos';
+            axios.get(url)
+                .then(response => {
+                    var productos = response.data;
+                    var tablaP = document.getElementById('productos');
+                    tablaP.innerHTML =
+                        '<tr><th>ID</th><th>Nombre</th><th>Precio</th><th>Stock</th><th>Acciones</th></tr>';
+                    productos.forEach(p => {
+                        var fila = document.createElement('tr');
+                        fila.innerHTML = `<td>${p.id}</td>
+                                          <td>${p.nombre}</td>
+                                          <td>${p.precio}</td>
+                                          <td>${p.stock}</td>
+                                          <td><button type="button" class="btn btn-success" onclick="comprar(${p.id})">Comprar</button></td>`;
+                        tablaP.appendChild(fila);
+                    });
+                })
+                .catch(error => {
+                    alert('Error al cargar los productos');
+                });
+        }
+
+        function salir() {
+            const url = 'http://localhost/CursoPHP/U5/APITienda/public/api/logout';
+            axios.post(url)
+                .then(response => {
+                    alert('Has salido correctamente');
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('usuario');
+                    window.location.href = 'login.html';
+                })
+                .catch(error => {
+                    alert('Error al cerrar sesión');
+                });
+        }
+    </script>
 </body>
-<script>
-    // Recuperar el token y el nombre de usuario desde el almacenamiento local
-    const token = localStorage.getItem('token');
-    if (token == null) {
-        window.location.href = 'login.html';  // Redirige al login si no hay token
-    } else {
-        const nombreUS = localStorage.getItem('usuario');
-        document.getElementById('nombreUS').textContent = `${nombreUS}`;  // Muestra el nombre del usuario
-
-        // Configurar el token de autenticación para todas las peticiones de Axios
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-
-        cargarProductos();  // Cargar productos
-        cargarPedidos();    // Cargar pedidos
-    }
-
-    // Función para cargar los pedidos desde la API
-    function cargarPedidos() {
-        const url = 'http://localhost/CursoPHP/U5/APITienda/public/api/pedidos';
-        axios.get(url)
-            .then(response => {
-                console.log(response.data);
-                var pedidos = response.data;
-                console.log(response.data);
-                var tablaP = document.getElementById('pedidos');
-                tablaP.innerHTML =
-                    '<tr><th>ID</th><th>Producto</th><th>Cantidad</th><th>Precio</th></tr>';
-                pedidos.forEach(p => {
-                    var fila = document.createElement('tr');
-                    fila.innerHTML = `<td>${p.id}</td>
-                                      <td>${p.producto}</td>
-                                      <td>${p.cantidad}</td>
-                                      <td>${p.precioU}</td>`;
-                    tablaP.appendChild(fila);
-                });
-            })
-            .catch(error => {
-                console.error(error);
-                alert('Error: ' + error.status + ' ' + error.response.data);
-            });
-    }
-
-    // Función para crear un nuevo pedido
-    function comprar(id) {
-        const url = 'http://localhost/CursoPHP/U5/APITienda/public/api/pedidos';
-        const datos = {
-            producto: id,
-            cantidad: 1
-        };
-        axios.post(url, datos)
-            .then(response => {
-                alert('Pedido creado');
-                cargarProductos();  // Recargar productos
-                cargarPedidos();    // Recargar pedidos
-            })
-            .catch(error => {
-                console.error(error);
-                alert('Error: ' + error.status + ' ' + error.response.data);
-            });
-    }
-
-    // Función para cargar los productos desde la API
-    function cargarProductos() {
-        const url = 'http://localhost/CursoPHP/U5/APITienda/public/api/productos';
-        axios.get(url)
-            .then(response => {
-                var productos = response.data;
-                var tablaP = document.getElementById('productos');
-                tablaP.innerHTML =
-                    '<tr><th>ID</th><th>Nombre</th><th>Precio</th><th>Stock</th><th>Acciones</th></tr>';
-                productos.forEach(p => {
-                    var fila = document.createElement('tr');
-                    fila.innerHTML = `<td>${p.id}</td>
-                                      <td>${p.nombre}</td>
-                                      <td>${p.precio}</td>
-                                      <td>${p.stock}</td>
-                                      <td><button type="button" class="btn btn-success" onclick="comprar(${p.id})">Comprar</button></td>`;
-                    tablaP.appendChild(fila);
-                });
-            })
-            .catch(error => {
-                console.error(error);
-                alert('Error al cargar los productos');
-            });
-    }
-
-    // Función para cerrar sesión
-    function salir() {
-        const url = 'http://localhost/CursoPHP/U5/APITienda/public/api/logout';
-        axios.post(url)
-            .then(response => {
-                alert('Has salido correctamente');
-                localStorage.removeItem('token');
-                localStorage.removeItem('usuario');
-                window.location.href = 'login.html';  // Redirige al login
-            })
-            .catch(error => {
-                console.error(error);
-                alert('Error: No se ha cerrado sesión');
-            });
-    }
-</script>
 </html>
